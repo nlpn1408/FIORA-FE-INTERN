@@ -49,7 +49,7 @@ export default function SettingCenter() {
   };
 
   const filteredMenuItems = menuSettingItems.filter(
-    (item) => !item.role || session?.user?.role === item.role,
+    (item: any) => !item.role || session?.user?.role === item.role,
   );
 
   return (
@@ -123,7 +123,7 @@ export default function SettingCenter() {
           </Tooltip>
 
           {session?.user &&
-            filteredMenuItems.map((item, index) => (
+            filteredMenuItems.map((item: any, index: any) => (
               <Tooltip key={index}>
                 <TooltipTrigger asChild>
                   <Link href={item.url} passHref>

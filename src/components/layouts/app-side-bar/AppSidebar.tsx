@@ -286,7 +286,7 @@ export default function AppSidebar({ navItems, appLabel }: AppSideBarProps) {
                   ))}
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>Settings</DropdownMenuLabel>
-                  {menuSettingItems.map((item) => (
+                  {menuSettingItems.map((item: any) => (
                     <DropdownMenuItem key={item.label} asChild>
                       <Link href={item.url} className="flex items-center gap-2">
                         <item.icon />
