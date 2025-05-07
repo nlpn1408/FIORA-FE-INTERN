@@ -2,10 +2,10 @@
 
 import HopperLogo from '@public/images/logo.jpg';
 import { AnimatePresence } from 'framer-motion';
-import { LogInIcon, Menu, UserPlus, X } from 'lucide-react';
+import { FileText, LogInIcon, Menu, UserPlus, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import HelpCenter from '@/components/layouts/dashboard-header/HelpCenter';
@@ -16,6 +16,7 @@ import {
 import { UserNav } from '@/components/layouts/user-nav/UserNav';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/shared/hooks/useIsMobile';
 import { ICON_SIZE } from '@/shared/constants/size';
 import { SectionType } from '@prisma/client';
@@ -28,8 +29,16 @@ export default function Header() {
   const isMobile = useIsMobile();
   const [isOpenAnountment, setIsOpenAnountment] = useState(true);
   const { data } = useSession();
+  const router = useRouter();
 
   const toggleMenu = () => setIsMenuOpen((prevState) => !prevState);
+
+  const handleRequestInvoice = () => {
+    router.push('/request-invoice');
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
 
   return (
     <header
@@ -80,6 +89,21 @@ export default function Header() {
             <div className="flex w-full justify-end">
               {/* Navigation */}
               <nav className="hidden md:flex items-center gap-8 px-8 mt-3">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <FileText
+                        onClick={handleRequestInvoice}
+                        size={ICON_SIZE.MD}
+                        className="transition-all duration-200 hover:text-primary hover:scale-110 cursor-pointer"
+                        aria-label="Request Invoice"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Request Invoice</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <HelpCenter />
                 <SettingCenter />
 
@@ -123,6 +147,15 @@ export default function Header() {
               <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
                 <X className="h-6 w-6" />
               </Button>
+
+              <div className="flex flex-col items-center">
+                <FileText
+                  onClick={handleRequestInvoice}
+                  size={18}
+                  className="transition-all duration-200 hover:text-primary hover:scale-110 cursor-pointer"
+                />
+                <span className="text-xs mt-1">Request Invoice</span>
+              </div>
 
               <ThemeToggle />
 

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-const publicRoutes = ['/', '/auth/sign-in', '/auth/sign-up', '/auth/sign-in/forgot-password'];
+const publicRoutes = [
+  '/',
+  '/auth/sign-in',
+  '/auth/sign-up',
+  '/auth/sign-in/forgot-password',
+  '/request-invoice',
+];
 
 export async function middleware(request: NextRequest) {
   try {
