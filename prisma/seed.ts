@@ -16,17 +16,17 @@ async function main() {
 
   // --- Clean up previous data ---
   console.log('Cleaning up existing data...');
-  
+
   // Delete in the correct order to respect foreign key constraints
   console.log('Deleting OrderInvoice records...');
   await prisma.orderInvoice.deleteMany({});
-  
+
   console.log('Deleting Invoice records...');
   await prisma.invoice.deleteMany({});
-  
+
   console.log('Deleting Order records...');
   await prisma.order.deleteMany({});
-  
+
   console.log('Data cleanup completed.');
 
   // --- Read Seed Data from JSON ---
