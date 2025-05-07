@@ -17,7 +17,6 @@ import { Textarea } from '@/components/ui/textarea';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Loader2, Check } from 'lucide-react';
 import {
@@ -27,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useInvoiceRequest } from '../hooks/useInvoiceRequest';
 
 // Phone validation regex for format 0xxx xxx xxx
 const PHONE_REGEX = /^0\d{3}(\s\d{3}){2}$/;
@@ -57,11 +57,10 @@ const requestInvoiceSchema = Yup.object().shape({
 type RequestInvoiceFormValues = Yup.InferType<typeof requestInvoiceSchema>;
 
 const RequestInvoiceForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
-  const [isSuccess, setIsSuccess] = useState(false);
   const [providers, setProviders] = useState<Provider[]>([]);
   const [isLoadingProviders, setIsLoadingProviders] = useState(false);
 
-  const form = useForm({
+  const form = useForm<RequestInvoiceFormValues>({
     resolver: yupResolver(requestInvoiceSchema),
     mode: 'onChange',
     defaultValues: {
@@ -75,23 +74,14 @@ const RequestInvoiceForm = ({ className, ...props }: React.ComponentProps<'div'>
     },
   });
 
+  const { isSubmitting, isSuccess, handleSubmit } = useInvoiceRequest<RequestInvoiceFormValues>({
+    form,
+    endpoint: '/api/invoices/request',
+  });
+
   // Fetch providers on component mount
   useEffect(() => {
     const fetchProviders = async () => {
-      // setIsLoadingProviders(true);
-      // try {
-      //   const response = await fetch('/api/providers');
-      //   if (!response.ok) {
-      //     throw new Error('Failed to fetch providers');
-      //   }
-      //   const data = await response.json();
-      //   setProviders(data.providers || []);
-      // } catch (error) {
-      //   console.error('Error fetching providers:', error);
-      //   toast.error('Failed to load providers');
-      // } finally {
-      //   setIsLoadingProviders(false);
-      // }
       setProviders([
         { id: 'seed-user-1', name: 'Provider 1' },
         { id: 'seed-user-2', name: 'Provider 2' },
@@ -119,77 +109,6 @@ const RequestInvoiceForm = ({ className, ...props }: React.ComponentProps<'div'>
     }
   };
 
-  async function onSubmit(data: RequestInvoiceFormValues) {
-    try {
-      const response = await fetch('/api/invoices/request', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        // Handle specific errors with appropriate messages
-        if (response.status === 404) {
-          toast.error(`Order not found: ${result.message}`, {
-            description: 'Please check your order number and try again.',
-          });
-        } else if (response.status === 403) {
-          toast.error(`Access denied: ${result.message}`, {
-            description: 'Please verify your email or phone number matches order details.',
-          });
-        } else if (result.errors) {
-          // Handle field validation errors
-          const errorMessage = Object.values(result.errors).join(', ');
-          toast.error(`Validation errors: ${errorMessage}`);
-        } else {
-          // Generic error message
-          const errorMessage = result.message || `HTTP error! status: ${response.status}`;
-          toast.error(`Failed to submit request: ${errorMessage}`);
-        }
-        console.error('API Error:', result);
-      } else {
-        setIsSuccess(true);
-
-        if (result.validation) {
-          if (result.validation.status === 'warning') {
-            // Show warning toast but still indicate success with form reset
-            toast.warning(`Invoice request requires review`, {
-              description: `Request No: ${result.data?.reqNo}. Your invoice request has been submitted but requires manual review.`,
-            });
-          } else if (result.validation.status === 'success') {
-            toast.success(result.validation.message, {
-              description: `Request No: ${result.data?.reqNo}. You will receive a confirmation email soon.`,
-            });
-          } else {
-            // Fallback to standard success message
-            toast.success(`Invoice request submitted successfully!`, {
-              description: `Request No: ${result.data?.reqNo}. You will receive a confirmation email soon.`,
-            });
-          }
-        } else {
-          // Fallback to standard success message if no validation info
-          toast.success(`Invoice request submitted successfully!`, {
-            description: `Request No: ${result.data?.reqNo}. You will receive a confirmation email soon.`,
-          });
-        }
-
-        form.reset(); // Reset form on success
-
-        // Reset success state after 5 seconds
-        setTimeout(() => setIsSuccess(false), 5000);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log('Error: ', error.stack);
-      }
-      console.error('Submission Error:', error);
-      toast.error('An unexpected error occurred while submitting the request.');
-    }
-  }
-
-  const isSubmitting = form.formState.isSubmitting;
   const isFormValid = form.formState.isValid;
 
   return (
@@ -199,7 +118,7 @@ const RequestInvoiceForm = ({ className, ...props }: React.ComponentProps<'div'>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* First row */}
               <FormField
