@@ -1,0 +1,64 @@
+import { OrderStatus } from '@prisma/client';
+import type { OrderValidationDto } from '../dtos/invoice-request.dto';
+
+/**
+ * Service responsible for validating order data against customer input
+ */
+export class OrderValidationService {
+  /**
+   * Validates customer data against order data
+   * @param orderData - Order data from database
+   * @param customerData - Customer data from request
+   * @returns Validation result with status and message
+   */
+  public validateOrderMatch(
+    orderData: {
+      cusName: string;
+      email: string | null;
+      phone: string | null;
+      status: OrderStatus;
+      orderNo: string;
+    } | null,
+    customerData: {
+      customerName: string;
+      email: string;
+      phone?: string | null;
+    },
+  ): OrderValidationDto {
+    // Only execute if order exists
+    if (!orderData) {
+      const result: OrderValidationDto = {
+        status: 'warning',
+        message:
+          'Order information could not be validated. Your request will be reviewed manually.',
+      };
+      return result;
+    }
+
+    // Check if data matches
+    const nameMatches = orderData.cusName.toLowerCase() === customerData.customerName.toLowerCase();
+    const emailMatches = orderData.email?.toLowerCase() === customerData.email.toLowerCase();
+    const phoneMatches = customerData.phone ? orderData.phone === customerData.phone : false;
+
+    const dataMatches = nameMatches || emailMatches || phoneMatches;
+    const isPaid = orderData.status === OrderStatus.Paid;
+
+    // Return appropriate validation result
+    if (!dataMatches || !isPaid) {
+      const result: OrderValidationDto = {
+        status: 'warning',
+        message: 'Your invoice request will need to be manually reviewed.',
+      };
+      return result;
+    }
+
+    const result: OrderValidationDto = {
+      status: 'success',
+      message: `Order ${orderData.orderNo} has been validated successfully.`,
+    };
+    return result;
+  }
+}
+
+// Singleton instance for use throughout the application
+export const orderValidationService = new OrderValidationService();

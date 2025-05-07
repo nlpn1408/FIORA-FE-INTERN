@@ -20,10 +20,22 @@ model User {
   sessions  Session[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  invoicesCreated Invoice[] @relation("InvoiceCreator")
+  invoicesUpdated Invoice[] @relation("InvoiceUpdater")
+  invoices        Invoice[]
+
+  ordersCreated Order[] @relation("OrderCreator")
+  ordersUpdated Order[] @relation("OrderUpdater")
+  orders        Order[]
+
+  orderInvoicesCreated OrderInvoice[] @relation("OrderInvoiceCreator")
+  orderInvoicesUpdated OrderInvoice[] @relation("OrderInvoiceUpdater")
+  orderInvoices        OrderInvoice[]
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -35,11 +47,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
 }
@@ -92,6 +102,85 @@ model Section {
   medias       Media[]
 }
 
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  orderNo   String      @unique
+  datetime  DateTime?   @db.Timestamptz(0)
+  totalAmt  Decimal     @db.Decimal(9, 2)
+  cusName   String      @db.VarChar(255)
+  address   String?     @db.VarChar(255)
+  email     String?     @db.VarChar(50)
+  phone     String?     @db.VarChar(20)
+  status    OrderStatus
+  createdAt DateTime    @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime    @updatedAt @db.Timestamptz(0)
+  updatedBy String?
+
+  creator       User?          @relation("OrderCreator", fields: [createdBy], references: [id])
+  updater       User?          @relation("OrderUpdater", fields: [updatedBy], references: [id])
+  user          User           @relation(fields: [userId], references: [id])
+  orderInvoices OrderInvoice[]
+
+  @@index([userId])
+  @@index([createdBy])
+  @@index([updatedBy])
+}
+
+model Invoice {
+  id          String        @id @default(uuid())
+  userId      String
+  reqNo       String        @unique @db.VarChar(10)
+  reqDatetime DateTime      @db.Timestamptz(0)
+  orderNo     String
+  cusName     String        @db.VarChar(255)
+  taxNo       String?       @db.VarChar(20)
+  taxAddress  String?       @db.VarChar(255)
+  email       String?       @db.VarChar(50)
+  phone       String?       @db.VarChar(20)
+  status      InvoiceStatus
+  invNo       String?       @unique @db.VarChar(50)
+  invDate     DateTime?     @db.Date
+  repNo       String?       @db.VarChar(50)
+  createdAt   DateTime      @default(now()) @db.Timestamptz(0)
+  createdBy   String?
+  updatedAt   DateTime      @updatedAt @db.Timestamptz(0)
+  updatedBy   String?
+
+  creator       User?          @relation("InvoiceCreator", fields: [createdBy], references: [id])
+  updater       User?          @relation("InvoiceUpdater", fields: [updatedBy], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+  orderInvoices OrderInvoice[]
+
+  @@index([userId])
+  @@index([createdBy])
+  @@index([updatedBy])
+}
+
+model OrderInvoice {
+  id        String   @id @default(uuid())
+  userId    String
+  orderNo   String
+  invNo     String
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
+
+  invoice Invoice @relation(fields: [invNo], references: [reqNo])
+  order   Order   @relation(fields: [orderNo], references: [orderNo])
+  creator User?   @relation("OrderInvoiceCreator", fields: [createdBy], references: [id])
+  updater User?   @relation("OrderInvoiceUpdater", fields: [updatedBy], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([orderNo, invNo])
+  @@index([orderNo])
+  @@index([invNo])
+  @@index([createdBy])
+  @@index([updatedBy])
+}
+
 enum MediaType {
   IMAGE
   VIDEO
@@ -118,4 +207,20 @@ enum UserRole {
 enum Currency {
   VND
   USD
+}
+
+enum OrderStatus {
+  Unpaid
+  Paid
+  Cancelled
+  Refund
+}
+
+enum InvoiceStatus {
+  Requested
+  Accepted
+  Issuing
+  Issued
+  Replaced
+  Cancelled
 }
