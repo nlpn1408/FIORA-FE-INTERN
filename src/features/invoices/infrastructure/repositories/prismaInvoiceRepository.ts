@@ -187,6 +187,7 @@ export class PrismaInvoiceRepository implements IInvoiceRepository {
         orderId: order.id,
         validationStatus: validationResult.status,
         validationMessage: validationResult.message,
+        validationTitle: validationResult.title,
       };
     });
 

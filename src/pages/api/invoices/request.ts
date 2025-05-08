@@ -56,6 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       validation: {
         status: result.validationStatus,
         message: result.validationMessage,
+        title: result.validationTitle,
       },
     });
   } catch (error) {
