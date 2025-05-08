@@ -26,17 +26,3 @@ export class InvoiceCreationError extends DomainError {
     super(message);
   }
 }
-
-// Error for when order details don't match user-provided information
-export class OrderMismatchError extends DomainError {
-  constructor(message: string = 'The information provided does not match the order records.') {
-    super(message);
-  }
-}
-
-// Success notification for order validation
-export class OrderValidationSuccess extends DomainError {
-  constructor(orderNo: string) {
-    super(`Success: Order ${orderNo} has been validated successfully.`);
-  }
-}

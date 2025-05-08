@@ -48,6 +48,7 @@ export class OrderValidationService {
       const result: OrderValidationDto = {
         status: 'warning',
         message: 'Your invoice request will need to be manually reviewed.',
+        title: !dataMatches ? 'Order Information Mismatch' : 'Order Not Paid',
       };
       return result;
     }
@@ -55,6 +56,7 @@ export class OrderValidationService {
     const result: OrderValidationDto = {
       status: 'success',
       message: `Order ${orderData.orderNo} has been validated successfully.`,
+      title: ' Request Success',
     };
     return result;
   }
