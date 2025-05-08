@@ -1,0 +1,210 @@
+{
+  "users": [
+    {
+      "id": "seed-user-1",
+      "email": "testuser@example.com",
+      "name": "Test User",
+      "password": "password123",
+      "role": "User"
+    },
+    {
+      "id": "seed-user-2",
+      "email": "admin@example.com",
+      "name": "Admin User",
+      "password": "adminpass123",
+      "role": "Admin"
+    },
+    {
+      "id": "seed-user-3",
+      "email": "customer@example.com",
+      "name": "Regular Customer",
+      "password": "custpass123",
+      "role": "User"
+    },
+    {
+      "id": "seed-user-4",
+      "email": "support@example.com",
+      "name": "Support Agent",
+      "password": "supportpass123",
+      "role": "CS"
+    }
+  ],
+  "orders": [
+    {
+      "id": "seed-order-1",
+      "orderNo": "ORD-2025-001",
+      "userId": "seed-user-1",
+      "totalAmt": 150.75,
+      "cusName": "Test Customer Inc.",
+      "address": "123 Main St, Anytown",
+      "email": "customer@test.com",
+      "phone": "0901 234 567",
+      "status": "Paid",
+      "createdBy": "seed-user-1"
+    },
+    {
+      "id": "seed-order-2",
+      "orderNo": "ORD-2025-002",
+      "userId": "seed-user-1",
+      "totalAmt": 99.99,
+      "cusName": "Guest Customer",
+      "email": "guest@anon.com",
+      "status": "Paid",
+      "createdBy": "seed-user-1"
+    },
+    {
+      "id": "seed-order-3",
+      "orderNo": "ORD-2025-003",
+      "userId": "seed-user-3",
+      "totalAmt": 299.50,
+      "cusName": "Premium Services Ltd.",
+      "address": "456 Business Avenue, Commerce City",
+      "email": "info@premiumservices.com",
+      "phone": "0912 345 678",
+      "status": "Paid",
+      "createdBy": "seed-user-3"
+    },
+    {
+      "id": "seed-order-4",
+      "orderNo": "ORD-2025-004",
+      "userId": "seed-user-3",
+      "totalAmt": 75.25,
+      "cusName": "Regular Customer",
+      "address": "789 Residential Lane, Hometown",
+      "email": "customer@example.com",
+      "phone": "0923 456 789",
+      "status": "Unpaid",
+      "createdBy": "seed-user-3"
+    },
+    {
+      "id": "seed-order-5",
+      "orderNo": "ORD-2025-005",
+      "userId": "seed-user-2",
+      "totalAmt": 199.99,
+      "cusName": "Tech Solutions Inc.",
+      "address": "101 Innovation Street, Tech City",
+      "email": "accounts@techsolutions.com",
+      "phone": "0934 567 890",
+      "status": "Paid",
+      "createdBy": "seed-user-2"
+    },
+    {
+      "id": "seed-order-6",
+      "orderNo": "ORD-2025-006",
+      "userId": "seed-user-2",
+      "totalAmt": 350.00,
+      "cusName": "Global Enterprises",
+      "address": "200 Corporate Plaza, Business District",
+      "email": "finance@globalenterprises.com",
+      "phone": "0945 678 901",
+      "status": "Cancelled",
+      "createdBy": "seed-user-2"
+    },
+    {
+      "id": "seed-order-7",
+      "orderNo": "ORD-2025-007",
+      "userId": "seed-user-3",
+      "totalAmt": 125.50,
+      "cusName": "Local Shop",
+      "address": "303 Market Street, Shopville",
+      "email": "owner@localshop.com",
+      "phone": "0956 789 012",
+      "status": "Paid",
+      "createdBy": "seed-user-3"
+    }
+  ],
+  "invoiceRequests": [
+    {
+      "id": "seed-invoice-1",
+      "reqNo": "REQ-00001",
+      "userId": "seed-user-1",
+      "providerId": "seed-user-2",
+      "orderId": "seed-order-1",
+      "orderNo": "ORD-2025-001",
+      "cusName": "Test Customer Inc.",
+      "taxNo": "TAX12345",
+      "taxAddress": "123 Main St, Anytown",
+      "email": "customer@test.com",
+      "phone": "0901 234 567",
+      "status": "Requested",
+      "createdBy": "seed-user-1"
+    },
+    {
+      "id": "seed-invoice-2",
+      "reqNo": "REQ-00002",
+      "userId": "seed-user-1",
+      "providerId": "seed-user-3",
+      "orderId": "seed-order-2",
+      "orderNo": "ORD-2025-002",
+      "cusName": "Guest Customer Name",
+      "taxNo": "GUEST-TAX",
+      "taxAddress": "Guest Address",
+      "email": "guest@example.com",
+      "phone": "0902 123 456",
+      "status": "Requested",
+      "createdBy": null
+    },
+    {
+      "id": "seed-invoice-3",
+      "reqNo": "REQ-00003",
+      "userId": "seed-user-3",
+      "providerId": "seed-user-1",
+      "orderId": "seed-order-3",
+      "orderNo": "ORD-2025-003",
+      "cusName": "Premium Services Ltd.",
+      "taxNo": "TAX67890",
+      "taxAddress": "456 Business Avenue, Commerce City",
+      "email": "info@premiumservices.com",
+      "phone": "0912 345 678",
+      "status": "Accepted",
+      "createdBy": "seed-user-3"
+    },
+    {
+      "id": "seed-invoice-4",
+      "reqNo": "REQ-00004",
+      "userId": "seed-user-3",
+      "providerId": "seed-user-4",
+      "orderId": "seed-order-7",
+      "orderNo": "ORD-2025-007",
+      "cusName": "Local Shop",
+      "taxNo": "TAX54321",
+      "taxAddress": "303 Market Street, Shopville",
+      "email": "owner@localshop.com",
+      "phone": "0956 789 012",
+      "status": "Issued",
+      "invNo": "INV-2025-001",
+      "invDate": "2025-03-15T00:00:00.000Z",
+      "createdBy": "seed-user-3"
+    },
+    {
+      "id": "seed-invoice-5",
+      "reqNo": "REQ-00005",
+      "userId": "seed-user-2",
+      "providerId": "seed-user-4",
+      "orderId": "seed-order-5",
+      "orderNo": "ORD-2025-005",
+      "cusName": "Tech Solutions Inc.",
+      "taxNo": "TAX98765",
+      "taxAddress": "101 Innovation Street, Tech City",
+      "email": "accounts@techsolutions.com",
+      "phone": "0934 567 890",
+      "status": "Issuing",
+      "createdBy": "seed-user-2"
+    },
+    {
+      "id": "seed-invoice-6",
+      "reqNo": "REQ-00006",
+      "userId": "seed-user-2",
+      "providerId": "seed-user-3",
+      "orderId": "seed-order-6",
+      "orderNo": "ORD-2025-006",
+      "cusName": "Global Enterprises",
+      "taxNo": "TAX24680",
+      "taxAddress": "200 Corporate Plaza, Business District",
+      "email": "finance@globalenterprises.com",
+      "phone": "0945 678 901",
+      "status": "Cancelled",
+      "createdBy": "seed-user-2"
+    }
+  ]
+}
