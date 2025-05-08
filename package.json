@@ -34,7 +34,6 @@
     "deploy:dev": "vercel --env NODE_ENV=development",
     "deploy:staging": "vercel --env NODE_ENV=staging",
     "deploy:prod": "vercel --prod",
-    "vercel-build": "vercel build",
     "vercel-build:debug": "NEXT_DEBUG_BUILD=true vercel build",
     "check-paths": "node scripts/check-path-aliases.mjs",
     "fix-paths": "node scripts/fix-path-aliases.mjs"
