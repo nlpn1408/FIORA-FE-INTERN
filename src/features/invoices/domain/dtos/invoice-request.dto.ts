@@ -20,6 +20,7 @@ export interface InvoiceRequestResultDto {
   orderId: string;
   validationStatus: 'warning' | 'success';
   validationMessage: string;
+  validationTitle?: string;
 }
 
 /**
@@ -28,4 +29,5 @@ export interface InvoiceRequestResultDto {
 export interface OrderValidationDto {
   status: 'warning' | 'success';
   message: string;
+  title?: string;
 }

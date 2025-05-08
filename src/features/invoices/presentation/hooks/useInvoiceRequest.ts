@@ -32,31 +32,25 @@ export function useInvoiceRequest<T extends FieldValues>({
       if (!response.ok) {
         // Handle specific errors with appropriate messages
         if (response.status === 404) {
-          toast.error(`Order not found: ${result.message}`, {
-            description: 'Please check your order number and try again.',
+          toast.error(`Order not found`, {
+            description: `${result?.message} Please check your order number and try again.`,
           });
-        } else if (result.errors) {
-          // Handle field validation errors
-          const errorMessage = Object.values(result.errors).join(', ');
-          toast.error(`Validation errors: ${errorMessage}`);
         } else {
-          // Generic error message
-          const errorMessage = result.message || `HTTP error! status: ${response.status}`;
-          toast.error(`Failed to submit request: ${errorMessage}`);
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to create invoice request');
         }
-        console.error('API Error:', result);
       } else {
         setIsSuccess(true);
 
         if (result.validation) {
-          if (result.validation.status === 'warning') {
+          if (result.validation?.status === 'warning') {
             // Show warning toast but still indicate success with form reset
-            toast.warning(`Invoice request requires review`, {
-              description: `Request No: ${result.data?.reqNo}. Your invoice request has been submitted but requires manual review.`,
+            toast.warning(result.validation?.title || 'Invoice request requires review', {
+              description: `Request No: ${result.data?.reqNo}. ${result.validation?.message}`,
             });
           } else {
             toast.success(`Invoice request submitted successfully!`, {
-              description: `Request No: ${result.data?.reqNo}. You will receive a confirmation email soon.`,
+              description: `Request No: ${result.data?.reqNo}.${result.validation?.message}`,
             });
           }
         } else {
@@ -72,9 +66,6 @@ export function useInvoiceRequest<T extends FieldValues>({
         setTimeout(() => setIsSuccess(false), 5000);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.log('Error: ', error.stack);
-      }
       console.error('Submission Error:', error);
       toast.error('An unexpected error occurred while submitting the request.');
     }
